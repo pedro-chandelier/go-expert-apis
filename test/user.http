@@ -1,0 +1,18 @@
+POST http://localhost:8000/users
+Content-Type: application/json
+
+{
+    "name": "Mr. Pipo",
+    "email": "chandelier.pipo@gmail.com",
+    "password": "goexpert"
+}
+
+###
+
+POST http://localhost:8000/users/generate-token
+Content-Type: application/json
+
+{
+    "email": "chandelier.pipo@gmail.com",
+    "password": "goexpert"
+}

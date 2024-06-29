@@ -18,7 +18,7 @@ type conf struct {
 	TokenAuth     *jwtauth.JWTAuth
 }
 
-func LoadConfig(configFilePath string) (*conf, error) {
+func LoadConfig(configFilePath string) *conf {
 	var config *conf
 
 	viper.SetConfigFile("app_config")
@@ -39,5 +39,5 @@ func LoadConfig(configFilePath string) (*conf, error) {
 	}
 
 	config.TokenAuth = jwtauth.New("HS256", []byte(config.JwtSecret), nil)
-	return config, err
+	return config
 }
