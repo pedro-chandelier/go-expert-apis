@@ -21,9 +21,13 @@ func main() {
 	}
 	db.AutoMigrate(&entity.Product{}, &entity.User{})
 
+	configs := configs.LoadConfig("configs/.env")
+
 	router := chi.NewRouter()
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
+	router.Use(middleware.WithValue("jwt", configs.TokenAuth))
+	router.Use(middleware.WithValue("jwtExpiresIn", configs.JwtExpiresIn))
 
 	attachUserHandler(db, router)
 	attachProductHandler(db, router)
@@ -49,9 +53,8 @@ func attachProductHandler(db *gorm.DB, router *chi.Mux) {
 }
 
 func attachUserHandler(db *gorm.DB, router *chi.Mux) {
-	configs := configs.LoadConfig("configs/.env")
 	userDB := database.NewUserDB(db)
-	userHandler := handlers.NewUserHandler(userDB, configs.TokenAuth, configs.JwtExpiresIn)
+	userHandler := handlers.NewUserHandler(userDB)
 
 	router.Post("/users", userHandler.CreateUser)
 	router.Post("/users/generate-token", userHandler.GetJwt)
