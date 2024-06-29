@@ -9,7 +9,7 @@ type ProductDB struct {
 	DB *gorm.DB
 }
 
-func NewProduct(db *gorm.DB) *ProductDB {
+func NewProductDB(db *gorm.DB) *ProductDB {
 	return &ProductDB{DB: db}
 }
 
