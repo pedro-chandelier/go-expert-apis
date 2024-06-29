@@ -23,6 +23,7 @@ func main() {
 
 	router := chi.NewRouter()
 	router.Use(middleware.Logger)
+	router.Use(middleware.Recoverer)
 
 	attachUserHandler(db, router)
 	attachProductHandler(db, router)
