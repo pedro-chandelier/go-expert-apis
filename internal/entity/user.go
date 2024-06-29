@@ -1,18 +1,29 @@
 package entity
 
 import (
+	"github.com/pedro-chandelier/go-expert-apis/internal/infra/validator"
 	"github.com/pedro-chandelier/go-expert-apis/pkg/entity"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
 	ID       entity.ID `json:"id"`
-	Name     string    `json:"name"`
-	Email    string    `json:"email"`
-	Password string    `json:"-"`
+	Name     string    `json:"name" validate:"required"`
+	Email    string    `json:"email" validate:"required"`
+	Password string    `json:"-" validate:"required"`
 }
 
 func NewUser(name, email, password string) (*User, error) {
+	err := validator.GetValidatorInstance().Struct(&User{
+		Name:     name,
+		Email:    email,
+		Password: password,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return nil, err
