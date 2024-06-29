@@ -7,13 +7,27 @@ import (
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/jwtauth"
 	"github.com/pedro-chandelier/go-expert-apis/configs"
+	_ "github.com/pedro-chandelier/go-expert-apis/docs"
 	"github.com/pedro-chandelier/go-expert-apis/internal/entity"
 	"github.com/pedro-chandelier/go-expert-apis/internal/infra/database"
 	"github.com/pedro-chandelier/go-expert-apis/internal/infra/webserver/handlers"
+	httpSwagger "github.com/swaggo/http-swagger"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
+// @title 			Go Expert API
+// @version 		1.0
+// @description 	Product API with authentication
+
+// @contact.name 	Pedro Haeser
+// @contact.email 	chandelier.pipo@gmail.com
+
+// @host 							localhost:8000
+// @BasePath 						/
+// @securityDefinitions.apiKey 		ApiKeyAuth
+// @in 								header
+// @name 							Authorization
 func main() {
 	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
 	if err != nil {
@@ -29,6 +43,7 @@ func main() {
 	router.Use(middleware.WithValue("jwt", configs.TokenAuth))
 	router.Use(middleware.WithValue("jwtExpiresIn", configs.JwtExpiresIn))
 
+	router.Get("/docs/*", httpSwagger.Handler(httpSwagger.URL("http://localhost:8000/docs/doc.json")))
 	attachUserHandler(db, router)
 	attachProductHandler(db, router)
 
